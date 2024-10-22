@@ -34,7 +34,8 @@ public class ClientHandler extends Thread {
                 attempts++;
 
                 // waiting --> catch the client's guess
-                int guess = Integer.parseInt(catchReq(in));
+                String strGuess = validate(in, out);
+                int guess = Integer.parseInt(strGuess);
 
                 // calculating --> get result
                 getResult(guess);
@@ -71,16 +72,32 @@ public class ClientHandler extends Thread {
     }
 
     public void getResult(int guess) {
-        if (guess < number) {
+        if (guess < number) 
             res = ResponseMessages.getGUESS_IS_UNDER();
-        }
 
-        if (guess > number) {
+        if (guess > number) 
             res = ResponseMessages.getGUESS_IS_OVER();
-        }
 
-        if (guess == number) {
+        if (guess == number) 
             res = ResponseMessages.getGUESS_IS_CORRECT();
-        }
+    }
+
+    public String validate(BufferedReader in, DataOutputStream out) throws IOException {
+        boolean isNumber = false;
+        String ans;
+        do {
+            ans = catchReq(in);
+            try {
+                int tmp = Integer.parseInt(ans);
+                isNumber = true;
+
+                if (tmp < 0 || tmp > 101) throw new Exception();
+            } catch (Exception e) {
+                isNumber = false;
+                sendRes(out, ResponseMessages.getREQUEST_ERROR());
+            }
+        } while (!isNumber);
+
+        return ans;
     }
 }
