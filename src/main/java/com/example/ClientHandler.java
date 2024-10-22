@@ -44,6 +44,8 @@ public class ClientHandler extends Thread {
 
                 // sending --> sending the needed number of tries (server response)
                 sendRes(out, Integer.toString(attempts)); 
+
+                System.out.println(number);
             } while (!isCorrect(res));
 
             socket.close();
